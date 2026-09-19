@@ -8,6 +8,8 @@ export default defineConfig({
     ? [['list'], ['github'], ['html', { open: 'never' }]]
     : 'list',
   use: {
-    trace: 'retain-on-failure',
+    trace: 'on',
+    video: 'on',
+    screenshot: 'only-on-failure',
   },
 });
