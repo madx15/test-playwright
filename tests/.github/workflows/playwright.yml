@@ -1,0 +1,45 @@
+name: Tests Playwright
+
+on:
+  # Bouton "Run workflow" manuel dans l'onglet Actions
+  workflow_dispatch: {}
+
+  # Lancement automatique quand un scénario est ajouté ou modifié
+  push:
+    branches: [main]
+    paths:
+      - "tests/**"
+      - "playwright.config.ts"
+      - "package.json"
+      - ".github/workflows/playwright.yml"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v4
+
+      - name: Installer Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Installer les dépendances
+        run: npm install
+
+      - name: Installer les navigateurs Playwright
+        run: npx playwright install --with-deps chromium
+
+      - name: Lancer les tests
+        run: npx playwright test
+
+      - name: Publier le rapport HTML (même si des tests échouent)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rapport-playwright
+          path: playwright-report/
+          retention-days: 14
